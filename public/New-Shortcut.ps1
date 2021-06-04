@@ -21,8 +21,8 @@
 function New-Shortcut {
     param (
         [Parameter(Mandatory)]
-        [Alias('SourceFilePath')]
-        $FilePath,
+        [Alias('SourceFilePath', 'SourceSharePath')]
+        $TargetPath,
 
         [Parameter(Mandatory)]
         [ValidatePattern('.*\.lnk')]
@@ -36,7 +36,7 @@ function New-Shortcut {
 
     $WscriptShell = New-Object -ComObject WScript.Shell
     $Shortcut = $WscriptShell.CreateShortcut($Destination)
-    $Shortcut.TargetPath = $FilePath
+    $Shortcut.TargetPath = $TargetPath
 
     if ($PSBoundParameters.ContainsKey('IconFilePath')) {
         $Shortcut.IconLocation = $IconFilePath
