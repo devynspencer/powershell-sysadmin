@@ -1,5 +1,5 @@
-# powershell-sysadmin
-Automate sysadmin tasks.
+# Sysadmin Module
+Automate sysadmin tasks. Simplify work. Profit.
 
 ## Configuration data
 Much if not all of this module is intended to run off of JSON data describing an infrastructure. This provides a source-controllable, explicit record of how the infrastructure should look/work/function.
