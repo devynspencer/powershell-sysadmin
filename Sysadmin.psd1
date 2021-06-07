@@ -61,9 +61,9 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
-        "Find-InactiveAccount"
-        "New-Shortcut"
-        "Set-PrintShortcutShareContent"
+        'Find-InactiveAccount'
+        'New-Shortcut'
+        'Set-PrintShortcutShareContent'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -90,7 +90,7 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @("sysadmin", "print-management", "share-management", "dfs")
+            Tags = @('sysadmin', 'print-management', 'share-management', 'dfs')
 
             # A URL to the license for this module.
             LicenseUri = 'https://raw.githubusercontent.com/devynspencer/powershell-sysadmin/master/LICENSE'
