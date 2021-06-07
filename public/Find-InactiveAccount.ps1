@@ -19,15 +19,31 @@
             MissingEmailAddress - Exclude accounts without an email address
             MissingHomeDirectory - Exclude accounts without a home directory
 
+    .PARAMETER EmailAddress
+        Email address(es) to send results to, in report form.
+
+    .PARAMETER ReportFromAddress
+        Email address to send results from.
+
+    .PARAMETER ReportSmtpServer
+        SMTP server to use when sending reports.
+
     .EXAMPLE
         Find-InactiveAccount -ExcludeCriteria 'AnyServicePrincipalNames', 'MissingHomeDirectory'
+
+    .EXAMPLE
+        $ExcludeCriteria = 'HasCannotChangePassword', 'HasPasswordNeverExpires', 'MissingHomeDirectory'
+        $EmailReportParameters = @{ EmailAddress = 'joe.joesworth@example.com'; ReportFromAddress = 'noreply@example.com'; ReportSmtpServer = 'smtp.example.com' }
+        Find-InactiveAccount -ExcludeCriteria $ExcludeCriteria @EmailReportParameters
 #>
 
 function Find-InactiveAccount {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'WithoutEmailReport')]
     param (
         $LastLogonDays = 90,
 
+        [Parameter(Mandatory, ParameterSetName = 'WithoutEmailReport')]
+        [Parameter(Mandatory, ParameterSetName = 'WithEmailReport')]
         [ValidateSet(
             'AnyServicePrincipalNames',
             'HasCannotChangePassword',
@@ -38,7 +54,17 @@ function Find-InactiveAccount {
             'MissingHomeDirectory'
         )]
         [string[]]
-        $ExcludeCriteria
+        $ExcludeCriteria,
+
+        [Parameter(Mandatory, ParameterSetName = 'WithEmailReport')]
+        [string[]]
+        $EmailAddress,
+
+        [Parameter(Mandatory, ParameterSetName = 'WithEmailReport')]
+        $ReportFromAddress,
+
+        [Parameter(Mandatory, ParameterSetName = 'WithEmailReport')]
+        $ReportSmtpServer
     )
 
     $AllUserObjects = Get-ADUser -Filter * -Properties @(
@@ -87,6 +113,20 @@ function Find-InactiveAccount {
     $InactiveUsers = $AllUsers.where({ $_.SamAccountName -notin $ExcludedUserNames }) |
         select LastLogonDate, Name, SamAccountName, HomeDirectory, Description |
         sort LastLogonDate -Descending
+
+    if ($PSCmdlet.ParameterSetName -eq 'WithEmailReport') {
+        $FormattedInactiveUsers = $InactiveUsers | ConvertTo-Json -Depth 1
+
+        $EmailReportParameters = @{
+            To = $EmailAddress
+            From = $ReportFromAddress
+            SmtpServer = $ReportSmtpServer
+            Subject = "Inactive User Account Report: $($InactiveUsers.Count) user accounts"
+            Body = "This is an automated report. Found $($InactiveUsers.Count) user accounts meeting inactive criteria:`n`n$FormattedInactiveUsers"
+        }
+
+        Send-MailMessage @EmailReportParameters
+    }
 
     return $InactiveUsers
 }
