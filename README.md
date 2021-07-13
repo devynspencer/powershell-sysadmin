@@ -27,3 +27,11 @@ An example of what is in use currently:
   ]
 }
 ```
+
+## Install
+Install from GitHub source:
+
+```powershell
+git clone 'https://github.com/devynspencer/powershell-sysadmin'
+cd .\powershell-sysadmin
+```
