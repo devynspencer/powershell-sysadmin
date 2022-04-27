@@ -63,6 +63,7 @@
     FunctionsToExport = @(
         'Get-AccountLockoutEvent'
         'Get-InstallProperty'
+        'Get-DiskUsage'
         'Find-InactiveAccount'
         'New-Shortcut'
         'Set-PrintShortcutShareContent'
