@@ -6,6 +6,11 @@ function Uninstall-Application {
         [string[]]
         $Name,
 
+        # Publisher name to filter applications by, wildcards encouraged
+        [Parameter(Mandatory, ParameterSetName = 'ByPublisher')]
+        [string[]]
+        $Publisher,
+
         [Parameter(Mandatory)]
         [ValidateSet('32-bit', '64-bit')]
         [string[]]
@@ -26,6 +31,12 @@ function Uninstall-Application {
         'ByName' {
             foreach ($AppName in $Name) {
                 $InstallData.where({ $_.DisplayName -like "$AppName" })
+            }
+        }
+
+        'ByPublisher' {
+            foreach ($PublisherName in $Publisher) {
+                $InstallData.where({ $_.Publisher -like "$PublisherName" })
             }
         }
     }
