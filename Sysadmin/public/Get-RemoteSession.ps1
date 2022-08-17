@@ -7,6 +7,19 @@ function Get-RemoteSession {
     )
 
     begin {
+        # Resolve session state parameter to actual/shorthand value
+        $SessionStates = @{
+            Active = 'Active'
+            Connected = 'Conn'
+            ConnectQuery = 'ConnQ'
+            Shadow = 'Shadow'
+            Listen = 'Listen'
+            Disconnected = 'Disc'
+            Idle = 'Idle'
+            Down = 'Down'
+            Initializing = 'Init'
+        }
+
         # Skip unreachable hosts
         $ReachableHosts = $ComputerName | ? { Test-Connection $_ -Quiet -Count 1 }
 
