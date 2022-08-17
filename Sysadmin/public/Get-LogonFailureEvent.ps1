@@ -50,6 +50,7 @@ function Get-LogonFailureEvent {
 
         foreach ($Event in $Events) {
             [pscustomobject] @{
+                Server = $Server
                 TargetAccount = $Event.properties.Value[5]
                 LogonType = $LogonType."$($Event.properties.Value[10])"
                 CallingComputer = $Event.Properties.Value[13]
