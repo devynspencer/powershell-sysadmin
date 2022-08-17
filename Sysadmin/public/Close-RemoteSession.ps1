@@ -25,10 +25,7 @@ function Close-RemoteSession {
             }
 
             # Clear the session
-            $ExecParams = @{
-                FilePath = 'rwinsta.exe'
-                ArgumentList = @("/server:$Computer", $SessionId, '/v')
-            }
+            rwinsta /server:$Computer $SessionId /v
         }
     }
 }
