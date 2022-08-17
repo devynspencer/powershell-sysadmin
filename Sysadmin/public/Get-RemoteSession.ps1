@@ -18,7 +18,10 @@ function Get-RemoteSession {
             'Initializing'
         )]
         [string[]]
-        $State
+        $State,
+
+        # Limit results to sessions with specified user
+        $Identity
     )
 
     begin {
@@ -73,6 +76,14 @@ function Get-RemoteSession {
 
                     $Include = $false
                 }
+
+                # Filter output objects based on username
+                if ($PSBoundParameters.ContainsKey('Identity') -and ($Session.UserName -ne $Identity)) {
+                    Write-Verbose "Excluding session [$($Session.Id)] - identity [$($Session.UserName)] not in [$Identity]"
+
+                    $Include = $false
+                }
+
                 if ($Include) {
                     # Build the output object
                     [pscustomobject] @{
