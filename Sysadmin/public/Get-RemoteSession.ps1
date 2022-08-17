@@ -3,7 +3,22 @@ function Get-RemoteSession {
         # Hosts to query session information from
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [string[]]
-        $ComputerName
+        $ComputerName,
+
+        # Limit results to sessions with specified state
+        [ValidateSet(
+            'Active',
+            'Connected',
+            'ConnectQuery',
+            'Shadow',
+            'Listen',
+            'Disconnected',
+            'Idle',
+            'Down',
+            'Initializing'
+        )]
+        [string[]]
+        $State
     )
 
     begin {
@@ -52,6 +67,12 @@ function Get-RemoteSession {
                 # Convert state value from shorthand to expanded/pretty value
                 $ExpandedState = $SessionStates.GetEnumerator().where({ $_.Value -eq $Session.State }).Name
 
+                # Filter output objects based on state
+                if ($PSBoundParameters.ContainsKey('State') -and ($ExpandedState -notin $State)) {
+                    Write-Verbose "Excluding session [$($Session.Id)] - state [$ExpandedState] not in [$State]"
+
+                    $Include = $false
+                }
                 if ($Include) {
                     # Build the output object
                     [pscustomobject] @{
