@@ -12,6 +12,7 @@ function Close-RemoteSession {
     # TODO: I'm unsure about pipeline support for something with specifics like a per-host session id that might change. Can each ComputerName pass a unique SessionId? Otherwise rewrite as a non-pipeline function I guess
     process {
         foreach ($Computer in $ComputerName) {
+
             if (!(Test-Connection $Computer -Quiet -Count 1)) {
                 $ErrorParams = @{
                     Message = "Unable to reach [$Computer], skipping..."
