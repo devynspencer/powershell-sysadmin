@@ -32,7 +32,7 @@ function Get-RemoteSession {
                     ComputerName = $Computer
                     SessionName = $Session.SessionName
                     UserName = $Session.UserName
-                    Id = $Session.Id
+                    SessionId = $Session.Id
                     State = $Session.State
                     Type = $Session.Type
                     Device = $Session.Device
