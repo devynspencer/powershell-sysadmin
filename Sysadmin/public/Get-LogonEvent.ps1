@@ -52,11 +52,11 @@ function Get-LogonEvent {
 
         foreach ($Event in $Events) {
             [pscustomobject] @{
-                Server = $Server
-                TargetAccount = $Event.properties.Value[5]
-                UserDomain = $Event.properties.Value[6]
+                Server = $Server.ToLower()
+                TargetAccount = $Event.properties.Value[5].ToLower()
+                UserDomain = $Event.properties.Value[6].ToLower()
                 LogonType = $LogonType."$($Event.properties.Value[8])"
-                CallingComputer = $Event.Properties.Value[11]
+                CallingComputer = $Event.Properties.Value[11].ToLower()
                 IPAddress = $Event.Properties.Value[19]
                 TimeCreated = $Event.TimeCreated
             }

@@ -38,9 +38,9 @@ function Get-AccountLockoutEvent {
 
         foreach ($Event in $Events) {
             [pscustomobject] @{
-                Server = $Server
-                TargetAccount = $Event.properties.Value[0]
-                CallingComputer = $Event.Properties.Value[1]
+                Server = $Server.ToLower()
+                TargetAccount = $Event.properties.Value[0].ToLower()
+                CallingComputer = $Event.Properties.Value[1].ToLower()
                 TimeCreated = $Event.TimeCreated
             }
         }
