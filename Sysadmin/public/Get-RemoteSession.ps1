@@ -9,6 +9,8 @@ function Get-RemoteSession {
     begin {
         # Skip unreachable hosts
         $ReachableHosts = $ComputerName | ? { Test-Connection $_ -Quiet -Count 1 }
+
+        Write-Verbose "Found [$($Reachable.Count)/$($ComputerName.Count)] hosts"
     }
 
     process {
@@ -19,6 +21,8 @@ function Get-RemoteSession {
             # https://stackoverflow.com/questions/8761888/capturing-standard-out-and-error-with-start-process
 
             $Output = qwinsta /server:$Computer | select -Skip 1
+
+            Write-Verbose "Found [$($Output.Count)] sessions on [$Computer]"
 
             # Extract session data from each line of output
             foreach ($Line in $Output) {
