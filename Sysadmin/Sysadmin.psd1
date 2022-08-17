@@ -65,6 +65,7 @@
         'Get-InstallProperty'
         'Get-DiskUsage'
         'Find-InactiveAccount'
+        'Find-HomeDirectoryOrphan'
         'New-Shortcut'
         'Set-PrintShortcutShareContent'
         'Restore-HostsFile'
