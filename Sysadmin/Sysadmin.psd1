@@ -70,6 +70,7 @@
         'Set-PrintShortcutShareContent'
         'Restore-HostsFile'
         'Uninstall-Application'
+        'Get-LogonEvent'
         'Get-LogonFailureEvent'
         'Get-AccountLockoutEvent'
         'Get-RemoteSession'
