@@ -25,6 +25,8 @@ function Close-RemoteSession {
                 return
             }
 
+            Write-Verbose "Closing session with id [$SessionId] on [$Computer]"
+
             # Clear the session
             rwinsta /server:$Computer $SessionId /v
         }
