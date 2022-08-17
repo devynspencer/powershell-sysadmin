@@ -25,10 +25,13 @@ function Find-HomeDirectoryOrphan {
                 # Check for user accounts that have a matching HomeDirectory attribute (likely
                 # mismatched due to a name change on the account *without* updating the directory name)
                 $Owner = $AllUsers | ? HomeDirectory -EQ $OrphanDirectory.FullName
+                $Files = Get-ChildItem -Path $OrphanDirectory.FullName
 
                 [pscustomobject] @{
                     Path = $OrphanDirectory.FullName
                     Owner = $Owner
+                    Files = $Files.Count
+                    LatestFileTime = $Files.LastWriteTime | sort -Descending | select -First 1
                 }
             }
         }
