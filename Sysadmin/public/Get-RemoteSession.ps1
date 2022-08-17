@@ -1,5 +1,6 @@
 function Get-RemoteSession {
     param (
+        # Hosts to query session information from
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [string[]]
         $ComputerName
@@ -12,14 +13,14 @@ function Get-RemoteSession {
 
     process {
         foreach ($Computer in $ReachableHosts) {
-            # Query for remote sessions
+            # Query host for remote sessions, skipping the first (header) line
 
             # TODO: Start-Process punts the output for some reason
             # https://stackoverflow.com/questions/8761888/capturing-standard-out-and-error-with-start-process
 
-            # Skip the first (header) line
             $Output = qwinsta /server:$Computer | select -Skip 1
 
+            # Extract session data from each line of output
             foreach ($Line in $Output) {
                 $HeaderFields = 'SessionName', 'UserName', 'Id', 'State', 'Type', 'Device'
 
