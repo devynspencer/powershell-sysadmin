@@ -27,15 +27,15 @@ function Repair-LocalAdministrator {
 
                 # Maintain idempotency, only update account when necessary
                 if (!$OriginalState.Enabled) {
-                    Enable-LocalUser @LocalAdminParams -WhatIf
+                    Enable-LocalUser @LocalAdminParams
                 }
 
                 if ($OriginalState.AccountExpires) {
-                    Set-LocalUser @LocalAdminParams -AccountNeverExpires -WhatIf
+                    Set-LocalUser @LocalAdminParams -AccountNeverExpires
                 }
 
                 if ($OriginalState.PasswordExpires) {
-                    Set-LocalUser @LocalAdminParams -PasswordNeverExpires -WhatIf
+                    Set-LocalUser @LocalAdminParams -PasswordNeverExpires
                 }
             }
         }
