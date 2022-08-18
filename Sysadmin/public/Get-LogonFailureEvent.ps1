@@ -1,6 +1,5 @@
 function Get-LogonFailureEvent {
     Param (
-        [Microsoft.ActiveDirectory.Management.ADUser]
         $Identity,
 
         [string]

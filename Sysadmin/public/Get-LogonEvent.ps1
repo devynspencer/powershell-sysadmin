@@ -2,7 +2,6 @@
 
 function Get-LogonEvent {
     Param (
-        [Microsoft.ActiveDirectory.Management.ADUser]
         $Identity,
 
         [string]

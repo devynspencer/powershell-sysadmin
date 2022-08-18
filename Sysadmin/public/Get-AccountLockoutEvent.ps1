@@ -1,6 +1,5 @@
 function Get-AccountLockoutEvent {
     Param (
-        [Microsoft.ActiveDirectory.Management.ADUser]
         $Identity,
 
         [string]
@@ -32,8 +31,7 @@ function Get-AccountLockoutEvent {
 
     process {
         if ($PSBoundParameters.ContainsKey('Identity')) {
-            $User = Get-ADUser $Identity
-            $Events = $Events | ? { $_.Properties[0].Value -eq $User.SamAccountName }
+            $Events = $Events | ? { $_.Properties[0].Value -eq $Identity }
         }
 
         foreach ($Event in $Events) {
