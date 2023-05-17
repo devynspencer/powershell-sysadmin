@@ -13,6 +13,10 @@ function Get-OrgFileShare {
             $SiteName = $SharePath | Split-Path -Parent | Split-Path -Leaf
             $GroupName = "FS - $SiteName $ShareName"
 
+            # Check if group exists already
+            Write-Verbose "Checking for existing group: [$GroupName]"
+            $GroupExists = Get-ADGroup -Identity $GroupName -ErrorAction 0
+
             # Search share permissions for corresponding share group (based on naming standard)
             $Acl = Get-Acl -Path $Path
 
@@ -33,6 +37,7 @@ function Get-OrgFileShare {
                 Site = $SiteName
                 Path = $SharePath
                 GroupName = $GroupName
+                GroupExists = [bool] $GroupExists
                 HasGroup = [bool] $Group
                 Owner = $Acl.Owner
                 Access = $Acl.Access
