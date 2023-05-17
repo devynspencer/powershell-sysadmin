@@ -26,7 +26,7 @@ function Get-OrgFileShare {
 
                 if ($CurrentIdentity -eq $GroupName) {
                     Write-Verbose "Matching share group found! [$GroupName]`n"
-                    $Group = $CurrentIdentity
+                    $MatchingGroup = $CurrentIdentity
                     break
                 }
             }
@@ -38,7 +38,7 @@ function Get-OrgFileShare {
                 Path = $SharePath
                 GroupName = $GroupName
                 GroupExists = [bool] $GroupExists
-                GroupAdded = [bool] $Group
+                GroupAdded = [bool] $MatchingGroup
                 Owner = $Acl.Owner
                 Access = $Acl.Access
             }
