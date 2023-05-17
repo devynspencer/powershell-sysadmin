@@ -38,7 +38,7 @@ function Get-OrgFileShare {
                 Path = $SharePath
                 GroupName = $GroupName
                 GroupExists = [bool] $GroupExists
-                HasGroup = [bool] $Group
+                GroupAdded = [bool] $Group
                 Owner = $Acl.Owner
                 Access = $Acl.Access
             }
