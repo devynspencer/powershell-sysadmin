@@ -3,7 +3,19 @@ function Get-OrgFileShare {
         # TODO: Support file objects as well...
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'ByPath')]
         [string[]]
-        $Path
+        $Path,
+
+        # Formatting rules to apply to share name before generating the final share group name
+        #
+        #   - StripHyphen: Remove hyphen characters, i.e. a site name of "SomeSite" and a share name of
+        #       "Section - A" would yield "FS - SomeSite Section A" instead of "FS - SomeSite Section - A"
+        #
+        #   - StripAmpersand: Remove ampersand characters, i.e. a site name of "SomeSite" and a share name of
+        #       "A & B" would yield "FS - SomeSite A B" instead of "FS - SomeSite A & B"
+        #
+        [ValidateSet('StripHypen', 'StripAmpersand')]
+        [string[]]
+        $FormatRules = @('StripHyphen')
     )
 
     process {
@@ -11,6 +23,18 @@ function Get-OrgFileShare {
             # Resolve share, site, and group names
             $ShareName = $SharePath | Split-Path -Leaf
             $SiteName = $SharePath | Split-Path -Parent | Split-Path -Leaf
+
+            # Handle formatting rules
+            switch ($FormatRules) {
+                'StripHyphen' {
+                    $ShareName = $ShareName -replace '\s+-\s+', ' '
+                }
+
+                'StripAmpersand' {
+                    $ShareName = $ShareName -replace '\s+&\s+', ' '
+                }
+            }
+
             $GroupName = "FS - $SiteName $ShareName"
 
             # Check if group exists already
