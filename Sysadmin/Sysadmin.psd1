@@ -81,6 +81,7 @@
         'Get-OrgUser'
         'Get-UserMembership'
         'Get-OrgFileShare'
+        'Repair-OrgFileShareAcl'
         'New-OrgFileShareGroup'
     )
 
