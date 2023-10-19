@@ -1,50 +1,100 @@
-<#
-    .SYNOPSIS
-        Create a shortcut.
-
-    .PARAMETER FilePath
-        Path to the file to create a shortcut to, i.e. 'C:\Program Files\Microsoft VS Code\Code.exe'.
-
-    .PARAMETER Destination
-        Path to create the shortcut at, i.e. 'C:\Users\foo\Desktop\code.lnk'
-
-    .PARAMETER IconFilePath
-        Path to the icon file to add to the shortcut.
-
-    .PARAMETER Arguments
-        Arguments, specified as a string, to pass to the shortcut target, i.e. '--disable-extensions' for the above would end up running the vscode binary without extensions: 'C:\Program Files\Microsoft VS Code\Code.exe --disable-extensions'
-
-    .EXAMPLE
-        New-Shortcut -FilePath 'C:\Users\public\foo.lnk' -TargetPath 'C:\Program Files\bar.exe' -Arguments '-DoSomething'
-#>
-
 function New-Shortcut {
-    param (
+    [CmdletBinding()]
+    Param (
+        # Target executable or location the shortcut will refer to
         [Parameter(Mandatory)]
-        [Alias('SourceFilePath', 'SourceSharePath')]
+        [ValidateNotNullOrEmpty()]
         $TargetPath,
 
-        [Parameter(Mandatory)]
-        [ValidatePattern('.*\.lnk')]
-        $Destination,
+        # File path of the created shortcut
+        $ShortcutPath = (Join-Path -Path $env:USERPROFILE -ChildPath 'New Shortcut.lnk'),
 
-        [ValidatePattern('.*\.ico')]
-        $IconFilePath,
+        # Array of arguments to pass to the target executable.
+        [string[]]
+        $Arguments,
 
-        $Arguments
+        # Accepts string or array. Ex: 'CTRL+SHIFT+F', Ex: @('CTRL','SHIFT','F')
+        [string[]]
+        $Keybind,
+
+        # Path of working directory to specify in shortcut properties.
+        $WorkingDirectory,
+
+        # Description to specify in shortcut properties.
+        $Description,
+
+        # Icon file to use for shortcut.
+        $IconLocation,
+
+        # Window style to specify in shortcut properties.
+        [ValidateSet('Default', 'Maximized', 'Minimized')]
+        $WindowStyle = 'Default',
+
+        # Run the shortcut with elevated credentials
+        [switch]
+        $Elevated
     )
 
-    $WscriptShell = New-Object -ComObject WScript.Shell
-    $Shortcut = $WscriptShell.CreateShortcut($Destination)
+    # Resolve window style
+    switch ($WindowStyle) {
+        'Default' {
+            $Style = 1
+            break
+        }
+
+        'Maximized' {
+            $Style = 3
+            break
+        }
+
+        'Minimized' {
+            $Style = 7
+        }
+    }
+
+    $WshShell = New-Object -ComObject WScript.Shell
+
+    # Create a new shortcut
+    $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
     $Shortcut.TargetPath = $TargetPath
+    $Shortcut.WindowStyle = $Style
 
-    if ($PSBoundParameters.ContainsKey('IconFilePath')) {
-        $Shortcut.IconLocation = $IconFilePath
-    }
-
+    # Handle optional arguments
     if ($PSBoundParameters.ContainsKey('Arguments')) {
-        $Shortcut.Arguments = $Arguments
+        $Shortcut.Arguments = $Arguments -join ' '
     }
 
+    if ($PSBoundParameters.ContainsKey('Keybind')) {
+        $Shortcut.Hotkey = ($Keybind -join '+').ToUpperInvariant()
+    }
+
+    if ($PSBoundParameters.ContainsKey('IconLocation')) {
+        $Shortcut.IconLocation = $IconLocation
+    }
+
+    if ($PSBoundParameters.ContainsKey('Description')) {
+        $Shortcut.Description = $Description
+    }
+
+    if ($PSBoundParameters.ContainsKey('WorkingDirectory')) {
+        $Shortcut.WorkingDirectory = $WorkingDirectory
+    }
+
+    # Save shortcut properties
     $Shortcut.Save()
+
+    Write-Host -ForegroundColor DarkCyan 'Configuring shortcut to run with elevated credentials'
+    if ($Elevated) {
+        # Read the shortcut file as byte array, set elevated byte to ON
+        [byte[]] $Bytes = [System.IO.File]::ReadAllBytes($ShortcutPath)
+        $Bytes[21] = $Bytes[21] -bor 0x20
+        [System.IO.File]::WriteAllBytes($ShortcutPath, $Bytes)
+    }
+
+    # Clean up COM objects
+    Write-Host -ForegroundColor DarkCyan 'Performing cleanup tasks'
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($Shortcut) | Out-Null
+    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($WshShell) | Out-Null
+    [System.GC]::Collect()
+    [System.GC]::WaitForPendingFinalizers()
 }
