@@ -74,3 +74,15 @@ $PublishParams = @{
 
 Publish-Module @PublishParams
 ```
+
+## Examples
+
+```powershell
+# Ensure the subdirectory is specified, not the project root
+$Path = "C:\Users\devyn\projects\powershell-sysadmin\Sysadmin"
+
+# Copy development PowerShell module from staging directory to local modules directory
+Deploy-ProjectModule -Path $Path -Verbose
+
+Import-Module MyProfile -Force -Verbose
+```
