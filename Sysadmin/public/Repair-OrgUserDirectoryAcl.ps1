@@ -1,4 +1,5 @@
 function Repair-OrgUserDirectoryAcl {
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-Path -Path $_ })]
@@ -57,11 +58,17 @@ function Repair-OrgUserDirectoryAcl {
 
             # TODO: Move identities to a parameter for accounts that should always have access to user directories
             # Reset directory permissions and replace with standard permission set for a user's home directory
-            Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/reset', '/t'
+            if ($PSCmdlet.ShouldProcess($UserDirectory, 'Reset directory permissions')) {
+                Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/reset', '/t'
+            }
 
-            Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/inheritance:r', '/grant:r', 'SYSTEM:(OI)(CI)(F)', 'Administrators:(OI)(CI)(F)'
+            if ($PSCmdlet.ShouldProcess($UserDirectory, 'Apply baseline permissions')) {
+                Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/inheritance:r', '/grant:r', 'SYSTEM:(OI)(CI)(F)', 'Administrators:(OI)(CI)(F)'
+            }
 
-            Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/inheritance:r', '/grant:r', "$ExpectedAccountName`:(OI)(CI)(M)"
+            if ($PSCmdlet.ShouldProcess($UserDirectory, 'Apply user permissions')) {
+                Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/inheritance:r', '/grant:r', "$ExpectedAccountName`:(OI)(CI)(M)"
+            }
         }
     }
 }
