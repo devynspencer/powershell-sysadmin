@@ -67,7 +67,7 @@ function Repair-OrgUserDirectoryAcl {
             }
 
             if ($PSCmdlet.ShouldProcess($UserDirectory, 'Apply user permissions')) {
-                Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/inheritance:r', '/grant:r', "$ExpectedAccountName`:(OI)(CI)(M)"
+                Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/grant:r', "$ExpectedAccountName`:(OI)(CI)(M)"
             }
         }
     }
