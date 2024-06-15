@@ -54,13 +54,12 @@ function Repair-OrgUserDirectoryAcl {
             NoNewWindow = $true
         }
 
-        # Reset ACLs
+        # TODO: Move identities to a parameter for accounts that should always have access to user directories
+        # Reset directory permissions and replace with standard permission set for a user's home directory
         Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/reset', '/t'
 
-        # Apply baseline permissions
         Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/inheritance:r', '/grant:r', 'SYSTEM:(OI)(CI)(F)', 'Administrators:(OI)(CI)(F)'
 
-        # Apply user permissions
         Start-Process @SharedParams -ArgumentList "`"$UserDirectory`"", '/inheritance:r', '/grant:r', "$ExpectedAccountName`:(OI)(CI)(M)"
     }
 }
