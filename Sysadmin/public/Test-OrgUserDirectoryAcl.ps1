@@ -2,6 +2,7 @@ function Test-OrgUserDirectoryAcl {
     param (
         # Path to the user directory to test
         [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -Path $_ })]
         [string]
         $Path,
 
