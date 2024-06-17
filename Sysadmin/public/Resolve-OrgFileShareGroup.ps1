@@ -14,7 +14,7 @@ function Resolve-OrgFileShareGroup {
     process {
         foreach ($FileSharePath in $Path) {
             # Get the directory name and parent directory name
-            $DirectoryName = (Split-Path -Path $FileSharePath -Leaf)
+            $DirectoryName = (Split-Path -Path $FileSharePath -Leaf).Replace(' - ', ' ')
             $ParentDirectoryName = (Split-Path -Path (Split-Path -Path $FileSharePath -Parent) -Leaf)
 
             # Build the group name
