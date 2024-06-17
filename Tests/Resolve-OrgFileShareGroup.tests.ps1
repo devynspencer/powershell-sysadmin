@@ -57,6 +57,15 @@ Describe 'Resolve-OrgFileShareGroup' {
         }
     }
 
+    Context 'when path contains a hyphen' {
+
+        It 'Removes the hyphen from the group name' {
+            $Path = '\\example.com\Files\Information Services\TS - Applications'
+
+            Resolve-OrgFileShareGroup -Path $Path | Should -Be 'FS - Information Services TS Applications'
+        }
+    }
+
     Context 'when PassThru switch is specified' {
 
         It 'returns the group object for a DFS path' {
