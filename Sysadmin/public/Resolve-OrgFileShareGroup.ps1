@@ -3,7 +3,10 @@ function Resolve-OrgFileShareGroup {
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-Path -Path $_ })]
         [string[]]
-        $Path
+        $Path,
+
+        [ValidateSet('Modify', 'Read')]
+        $AccessType = 'Modify'
     )
 
     process {
@@ -12,7 +15,21 @@ function Resolve-OrgFileShareGroup {
             $DirectoryName = (Split-Path -Path $FileSharePath -Leaf)
             $ParentDirectoryName = (Split-Path -Path (Split-Path -Path $FileSharePath -Parent) -Leaf)
 
-            return "FS - $ParentDirectoryName $DirectoryName"
+            $GroupName = "FS - $ParentDirectoryName $DirectoryName"
+
+            # Add the access type as a suffix, if specified
+            switch ($AccessType) {
+                'Modify' {
+                    # No suffix needed for Modify access
+                }
+
+                'Read' {
+                    $GroupSuffix = "($AccessType)"
+                    $GroupName = "$GroupName $GroupSuffix"
+                }
+            }
+
+            $GroupName
         }
     }
 }
