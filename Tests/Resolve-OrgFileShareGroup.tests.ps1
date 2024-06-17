@@ -56,4 +56,15 @@ Describe 'Resolve-OrgFileShareGroup' {
             $Path | Resolve-OrgFileShareGroup | Should -Be 'FS - Public Documents'
         }
     }
+
+    Context 'when PassThru switch is specified' {
+
+        It 'returns the group object for a DFS path' {
+
+        }
+
+        It 'returns the group object for a filesystem path' {
+
+        }
+    }
 }
