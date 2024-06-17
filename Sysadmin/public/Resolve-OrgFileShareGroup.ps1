@@ -1,10 +1,12 @@
 function Resolve-OrgFileShareGroup {
     param (
+        # The path to the file share
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateScript({ Test-Path -Path $_ })]
         [string[]]
         $Path,
 
+        # The type of access granted to the group
         [ValidateSet('Modify', 'Read')]
         $AccessType = 'Modify'
     )
@@ -15,6 +17,7 @@ function Resolve-OrgFileShareGroup {
             $DirectoryName = (Split-Path -Path $FileSharePath -Leaf)
             $ParentDirectoryName = (Split-Path -Path (Split-Path -Path $FileSharePath -Parent) -Leaf)
 
+            # Build the group name
             $GroupName = "FS - $ParentDirectoryName $DirectoryName"
 
             # Add the access type as a suffix, if specified
@@ -29,6 +32,7 @@ function Resolve-OrgFileShareGroup {
                 }
             }
 
+            # Return the group name
             $GroupName
         }
     }
