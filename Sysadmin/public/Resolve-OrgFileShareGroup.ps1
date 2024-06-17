@@ -2,12 +2,15 @@ function Resolve-OrgFileShareGroup {
     param (
         [Parameter(Mandatory)]
         [ValidateScript({ Test-Path -Path $_ })]
-        [string]
+        [string[]]
         $Path
     )
 
-    $DirectoryName = (Split-Path -Path $Path -Leaf)
-    $ParentDirectoryName = (Split-Path -Path (Split-Path -Path $Path -Parent) -Leaf)
+    foreach ($FileSharePath in $Path) {
+        # Get the directory name and parent directory name
+        $DirectoryName = (Split-Path -Path $FileSharePath -Leaf)
+        $ParentDirectoryName = (Split-Path -Path (Split-Path -Path $FileSharePath -Parent) -Leaf)
 
-    return "FS - $ParentDirectoryName $DirectoryName"
+        return "FS - $ParentDirectoryName $DirectoryName"
+    }
 }
