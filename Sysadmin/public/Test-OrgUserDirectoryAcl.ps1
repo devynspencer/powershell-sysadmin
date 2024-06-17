@@ -6,6 +6,12 @@ function Test-OrgUserDirectoryAcl {
         [string]
         $Path,
 
+        # TODO: Accept an array of directory paths to test. Complicated by the need to have an equivalent username to test against for each directory. Would need to be a hashtable of paths and usernames, or a custom object with properties for path and username.
+
+        # TODO: Add pipeline support. Encounters similar issues to those outlined above.
+
+        # TODO: If no SamAccountName is provided, attempt to resolve it from the directory name. Would need to throw an error versus just returning false though, right? Otherwise it seems like a false negative.
+
         # SamAccountName of the user to test
         [Parameter(Mandatory)]
         [string]
