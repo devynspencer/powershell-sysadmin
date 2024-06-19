@@ -1,4 +1,5 @@
 function New-OrgFileShareGroup {
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         # TODO: Add parameter set to handle specifying a share name explicitly instead of querying file servers
 
@@ -59,9 +60,10 @@ function New-OrgFileShareGroup {
 
         # Ensure subsequent runs are idempotent
         if (!(Get-ADGroup $GroupParams.Name -ErrorAction 0)) {
-            Write-Verbose "[New-OrgFileShareGroup] Creating share management group in $Path`n"
-            Write-Verbose "[New-OrgFileShareGroup] Name: $($GroupParams.Name)`nDescription: $($GroupParams.Description)`n"
-            New-ADGroup @GroupParams
+            if ($PSCmdlet.ShouldProcess($Path, "Create share access group for [$($Share.Name)] at [$Path]")) {
+                Write-Verbose "[New-OrgFileShareGroup] Name: $($GroupParams.Name)`nDescription: $($GroupParams.Description)`n"
+                New-ADGroup @GroupParams
+            }
         }
 
         else {
