@@ -37,6 +37,7 @@ function New-OrgFileShareGroup {
         # Format security group name and description
         $Sanitized = $Share.Name -replace "[^a-zA-Z0-9\s&'-]+", ' ' -replace '\s\s+', ' '
 
+        # Assumes share names are structures as "SITE - SHARE NAME"
         $NamePrefix = $Sanitized.Split(' - ')[0]
         $NameSuffix = $Sanitized.Split(' - ')[-1]
 
