@@ -65,7 +65,7 @@ function New-OrgFileShareGroup {
         }
 
         else {
-            Write-Verbose "[New-OrgFileShareGroup] Share management group already exists: $($GroupParams.Name)`n"
+            Write-Verbose "[New-OrgFileShareGroup] Share access group already exists: $($GroupParams.Name)`n"
         }
     }
 }
