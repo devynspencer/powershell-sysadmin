@@ -32,6 +32,8 @@ function New-OrgFileShareGroup {
     $FileShares = Get-SmbShare -CimSession $Sessions | ? Name -NotMatch $ExcludePattern
 
     foreach ($Share in $FileShares) {
+        Write-Verbose "[New-OrgFileShareGroup] Building correct share name for [$($Share.Name)]"
+
         # Format security group name and description
         $Sanitized = $Share.Name -replace "[^a-zA-Z0-9\s&'-]+", ' ' -replace '\s\s+', ' '
 
@@ -50,15 +52,19 @@ function New-OrgFileShareGroup {
             WhatIf = $WhatIf
         }
 
+
+        Write-Verbose "[New-OrgFileShareGroup] Sanitized share name is [$Sanitized]`nPrefix is [$NamePrefix]`nSuffix is [$NameSuffix]"
+        Write-Verbose "[New-OrgFileShareGroup] Group name is [$($GroupParams.Name)]"
+
         # Ensure subsequent runs are idempotent
         if (!(Get-ADGroup $GroupParams.Name -ErrorAction 0)) {
-            Write-Host -ForegroundColor DarkCyan "Creating share management group in $Path`n"
-            Write-Host -ForegroundColor Cyan "Name: $($GroupParams.Name)`nDescription: $($GroupParams.Description)`n"
+            Write-Verbose "[New-OrgFileShareGroup] Creating share management group in $Path`n"
+            Write-Verbose "[New-OrgFileShareGroup] Name: $($GroupParams.Name)`nDescription: $($GroupParams.Description)`n"
             New-ADGroup @GroupParams
         }
 
         else {
-            Write-Host -ForegroundColor Magenta "Share management group already exists: $($GroupParams.Name)`n"
+            Write-Verbose "[New-OrgFileShareGroup] Share management group already exists: $($GroupParams.Name)`n"
         }
     }
 }
